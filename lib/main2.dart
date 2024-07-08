@@ -78,7 +78,8 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Machine Control App'),
+        title: Text('Remote Controlled Brush Cutter App'),
+        backgroundColor: Colors.green,
       ),
       body: Center(
         child: Column(

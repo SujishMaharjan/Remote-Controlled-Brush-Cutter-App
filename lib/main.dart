@@ -120,11 +120,34 @@ class OperationScreen extends StatelessWidget {
         title: Text('Operation Screen'),
       ),
       body: Center(
-        child: Text('Operation Screen'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: () {},
+              child: Text("A"),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: Text("B"),
+            ),
+            ElevatedButton(
+              onPressed: () {},
+              child: Text("C"),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("Stop Operation"),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
+
 
 class MachineInfoScreen extends StatelessWidget {
   @override
