@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 void main() {
   runApp(MyApp());
@@ -124,8 +125,13 @@ class OperationScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             ElevatedButton(
-              onPressed: () {},
-              child: Text("A"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => FROperationScreen()),
+                );
+              },
+              child: Text("F/R Operation"),
             ),
             ElevatedButton(
               onPressed: () {},
@@ -140,6 +146,56 @@ class OperationScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
               child: Text("Stop Operation"),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class FROperationScreen extends StatefulWidget {
+  @override
+  _FROperationScreenState createState() => _FROperationScreenState();
+}
+
+class _FROperationScreenState extends State<FROperationScreen> {
+  double speed = 128;
+
+  void sendSpeed() {
+    // Add logic to send the speed to the machine
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('Speed set to ${speed.toStringAsFixed(0)}')),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('F/R Operation'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Slider(
+              value: speed,
+              min: 1,
+              max: 255,
+              onChanged: (double value) {
+                setState(() {
+                  speed = value;
+                });
+              },
+            ),
+            Text(
+              'Speed: ${speed.toStringAsFixed(0)}',
+              style:TextStyle(fontSize: 24),
+            ),
+            ElevatedButton(
+              onPressed: sendSpeed,
+              child: Text('Send Speed to Machine'),
             ),
           ],
         ),
