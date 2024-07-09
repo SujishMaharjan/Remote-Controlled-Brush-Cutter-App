@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:async';
 
 void main() {
   runApp(MyApp());
@@ -113,34 +114,78 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class OperationScreen extends StatelessWidget {
+class OperationScreen extends StatefulWidget {
+  @override
+  State<OperationScreen> createState() => _OperationScreenState();
+}
+
+class _OperationScreenState extends State<OperationScreen> {
+  double speed = 128;
+  double turn = 128;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Operation Screen'),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text("Left Right Operation"),
+            Slider(
+              value: turn,
+              min: 1,
+              max: 255,
+              onChanged: (double value) {
+                setState(() {
+                  turn = value;
+                });
+              },
+            ),
+            SizedBox(height: 32.0), // Add some spacing between sliders
+            Text("Forward Reverse Operation"),
+            SizedBox(height: 32.0),
+            Transform.rotate(
+              angle: 4.71,
+              child: Container(
+                height:
+                    300, // Ensure there's enough space for the slider to be fully displayed
+                child: Slider(
+                  value: speed,
+                  min: 1,
+                  max: 255,
+                  onChanged: (double value) {
+                    setState(() {
+                      speed = value;
+                    });
+                  },
+                ),
+              ),
+            ),
+            SizedBox(height: 32.0), // Add some spacing before the buttons
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => FROperationScreen()),
+                  MaterialPageRoute(builder: (context) => SpeedSettingScreen()),
                 );
               },
-              child: Text("F/R Operation"),
+              child: Text("Set High speed"),
             ),
+            SizedBox(height: 16.0), // Add spacing between buttons
             ElevatedButton(
-              onPressed: () {},
-              child: Text("B"),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EnOperationScreen()),
+                );
+              },
+              child: Text("Engine Operation Screen"),
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: Text("C"),
-            ),
+            SizedBox(height: 16.0), // Add spacing between buttons
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -154,48 +199,36 @@ class OperationScreen extends StatelessWidget {
   }
 }
 
-class FROperationScreen extends StatefulWidget {
+class SpeedSettingScreen extends StatefulWidget {
   @override
-  _FROperationScreenState createState() => _FROperationScreenState();
+  State<SpeedSettingScreen> createState() => _SpeedSettingScreenState();
 }
 
-class _FROperationScreenState extends State<FROperationScreen> {
-  double speed = 128;
-
-  void sendSpeed() {
-    // Add logic to send the speed to the machine
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Speed set to ${speed.toStringAsFixed(0)}')),
-    );
-  }
-
+class _SpeedSettingScreenState extends State<SpeedSettingScreen> {
+  double maxSpeedSet = 1;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('F/R Operation'),
+        title: Text('Maximum Speed Setting Screen'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Slider(
-              value: speed,
+              value: maxSpeedSet,
               min: 1,
-              max: 255,
+              max: 3.1,
               onChanged: (double value) {
                 setState(() {
-                  speed = value;
+                  maxSpeedSet = value;
                 });
               },
             ),
             Text(
-              'Speed: ${speed.toStringAsFixed(0)}',
-              style:TextStyle(fontSize: 24),
-            ),
-            ElevatedButton(
-              onPressed: sendSpeed,
-              child: Text('Send Speed to Machine'),
+              'Max Speed Set: ${maxSpeedSet.toStringAsFixed(1)} km/h',
+              style: TextStyle(fontSize: 24),
             ),
           ],
         ),
@@ -204,6 +237,68 @@ class _FROperationScreenState extends State<FROperationScreen> {
   }
 }
 
+class EnOperationScreen extends StatefulWidget {
+  @override
+  State<EnOperationScreen> createState() => _EnOperationScreenState();
+}
+
+class _EnOperationScreenState extends State<EnOperationScreen> {
+  bool isStartPressed = false;
+  bool isStopPressed = false;
+
+  void handleStopPress() {
+    setState(() {
+      isStopPressed = true;
+      isStartPressed = false;
+    });
+
+    Timer(Duration(seconds: 2), () {
+      setState(() {
+        isStopPressed = false;
+      });
+    });
+  }
+
+  bool isActive = false;
+  void handleStartPress() {
+    setState(() {
+      isStopPressed = false;
+      isStartPressed = true;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Engine Operation Screen'),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            ElevatedButton(
+              onPressed: handleStartPress,
+              child: Text(isStartPressed ? 'Engine Started' : 'Start Engine'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isStartPressed ? Colors.green : Colors.white,
+              ),
+            ),
+            ElevatedButton(
+              onPressed: handleStopPress,
+              child: Text(isStopPressed ? 'Engine Stopped' : 'Stop Engine'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: isStopPressed ? Colors.green : Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class MachineInfoScreen extends StatelessWidget {
   @override
